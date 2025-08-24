@@ -35,7 +35,7 @@ export const loginUser = async (credentials: LoginCredentials): Promise<AuthResp
 
     // Store token in localStorage
     if (data.token) {
-      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('assessToken', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
     }
     return {
@@ -69,7 +69,7 @@ export const signupUser = async (credentials: SignupCredentials): Promise<AuthRe
     if (response.ok) {
       // Store token in localStorage
       if (data.token) {
-        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('assessToken', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
       }
       return {
@@ -94,13 +94,13 @@ export const signupUser = async (credentials: SignupCredentials): Promise<AuthRe
 
 // Logout function
 export const logoutUser = () => {
-  localStorage.removeItem('authToken');
+  localStorage.removeItem('assessToken');
   localStorage.removeItem('user');
 };
 
 // Check if user is authenticated
 export const isAuthenticated = (): boolean => {
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem('assessToken');
   return !!token;
 };
 
@@ -112,5 +112,5 @@ export const getCurrentUser = (): User | null => {
 
 // Get auth token
 export const getAuthToken = (): string | null => {
-  return localStorage.getItem('authToken');
+  return localStorage.getItem('assessToken');
 };

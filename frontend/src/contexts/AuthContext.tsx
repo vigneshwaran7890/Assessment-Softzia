@@ -27,13 +27,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuth, setIsAuth] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-
+  console.log("isAuth:", isAuth); // Debugging line to check auth state
+  console.log("user:", user); // Debugging line to check user state
   useEffect(() => {
     // Check if user is authenticated on component mount
     const checkAuth = () => {
       const authenticated = isAuthenticated();
       const currentUser = getCurrentUser();
-      
+
       setIsAuth(authenticated);
       setUser(currentUser);
       setLoading(false);

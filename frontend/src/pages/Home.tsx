@@ -11,7 +11,6 @@ import EditBookModal from '../components/dashBoard/EditBookModal.js';
 import DeleteBookModal from '../components/dashBoard/DeleteBookModal.js';
 
 const Home = () => {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isAddBookOpen, setIsAddBookOpen] = useState(false);
@@ -27,12 +26,13 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleLogout = () => {
-    logout();
     logoutUser();
     toast({
       title: 'Logged out',
       description: 'You have been successfully logged out.',
     });
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     navigate('/login');
   };
 
