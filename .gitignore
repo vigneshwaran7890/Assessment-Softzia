@@ -4,6 +4,7 @@ backend/*.pyc
 backend/venv/
 backend/node_modules/
 backend/uploads/
+backend/.env/
 
 # --- Frontend (Node.js) ---
 frontend/node_modules/
