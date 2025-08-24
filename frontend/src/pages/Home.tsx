@@ -58,7 +58,9 @@ const Home = () => {
     setIsEditBookOpen(true);
   };
 
- 
+
+
+
 
   const handleDeleteBook = (book) => {
     setSelectedBook(book);
@@ -99,8 +101,8 @@ const Home = () => {
   // Filter books based on status and search term
   const filteredBooks = books.filter(book => {
     const matchesFilter = filter === 'all' || book.status?.toLowerCase() === filter;
-    const matchesSearch = book.title?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          book.genre?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = book.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.genre?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesFilter && matchesSearch;
   });
 
@@ -149,7 +151,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-          
+
           <button
             onClick={() => setIsAddBookOpen(true)}
             className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center"
@@ -169,9 +171,9 @@ const Home = () => {
         ) : filteredBooks.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredBooks.map(book => (
-              <BookCard 
-                key={book._id} 
-                book={book} 
+              <BookCard
+                key={book._id}
+                book={book}
                 onEdit={() => handleEditBook(book)}
                 onDelete={() => handleDeleteBook(book)}
               />
@@ -184,8 +186,8 @@ const Home = () => {
             </svg>
             <h3 className="mt-2 text-sm font-medium text-gray-900">No books found</h3>
             <p className="mt-1 text-sm text-gray-500">
-              {searchTerm || filter !== 'all' 
-                ? 'Try adjusting your search or filter to find what you are looking for.' 
+              {searchTerm || filter !== 'all'
+                ? 'Try adjusting your search or filter to find what you are looking for.'
                 : 'Get started by adding a new book.'}
             </p>
             <div className="mt-6">
@@ -209,7 +211,7 @@ const Home = () => {
         onClose={() => setIsAddBookOpen(false)}
         onBookAdded={handleBookAdded}
       />
-      
+
       {selectedBook && (
         <>
           <EditBookModal
@@ -221,7 +223,7 @@ const Home = () => {
             onBookUpdated={handleBookUpdated}
             book={selectedBook}
           />
-          
+
           <DeleteBookModal
             isOpen={isDeleteBookOpen}
             onClose={() => {
