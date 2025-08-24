@@ -45,7 +45,7 @@ export const loginUser = async (credentials: LoginCredentials): Promise<AuthResp
       token: data.token,
       user: data.user,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     return {
       success: false,
       message: error.response?.data?.message || 'Login failed',

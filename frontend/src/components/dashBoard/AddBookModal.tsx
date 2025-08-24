@@ -256,7 +256,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
           cover: ''
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error adding book:', error);
       const errorMessage = error.response?.data?.message || 'Failed to add book. Please try again.';
       toast.error(errorMessage);

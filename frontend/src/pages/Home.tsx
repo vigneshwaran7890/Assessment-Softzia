@@ -36,22 +36,24 @@ const Home = () => {
     navigate('/login');
   };
 
-  const fetchUserBooks = async () => {
+  const fetchUserBooks = React.useCallback(async () => {
     try {
       setLoading(true);
       const data = await getUserBooks();
       setBooks(data.books || []);
     } catch (error) {
-      console.error('Error fetching books:', error);
+      console.error("Error fetching books:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to fetch books.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Failed to fetch books.",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]); // only include reactive dependencies like state setters or hooks
+
+
 
   const handleEditBook = (book) => {
     setSelectedBook(book);
@@ -108,7 +110,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchUserBooks();
-  }, []);
+  }, [fetchUserBooks]);
 
   return (
     <div className="min-h-screen bg-gray-50">

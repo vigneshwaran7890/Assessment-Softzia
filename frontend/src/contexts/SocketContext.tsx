@@ -3,6 +3,7 @@ import { io, Socket } from "socket.io-client";
 
 const SocketContext = createContext<Socket | null>(null);
 
+/* eslint-disable react-refresh/only-export-components */
 export const useSocket = () => useContext(SocketContext);
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

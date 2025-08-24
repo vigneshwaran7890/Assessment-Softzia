@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from "dayjs";
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-
-const BookCard = ({ book, onEdit, onDelete, onRead }) => {
+import { useNavigate } from 'react-router-dom'; // Import useNavigat
+const BookCard = ({ book, onEdit, onDelete, onRead = null }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [status, setStatus] = useState("Processing...");
   const navigate = useNavigate(); // Initialize navigate function

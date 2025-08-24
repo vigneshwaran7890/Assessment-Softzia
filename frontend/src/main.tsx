@@ -11,10 +11,9 @@ export const EnrichPersonButton: React.FC<{ personId: string }> = ({ personId })
 
   useEffect(() => {
     if (!socket) return;
-
-    const handleProgress = (data: any) => setProgress(data.message);
-    const handleError = (data: any) => setProgress(`Error: ${data.error}`);
-    const handleComplete = (data: any) => {
+    const handleProgress = (data: unknown) => setProgress(data.message);
+    const handleError = (data: unknown) => setProgress(`Error: ${data.error}`);
+    const handleComplete = (data: unknown) => {
       setProgress("Enrichment complete.");
       // Optionally, you can do something with the complete data here
     };
