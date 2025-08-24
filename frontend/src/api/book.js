@@ -48,6 +48,7 @@ export async function getUserBooks() {
 
 export async function updateBook(id, payload) {
   try {
+    console.error("Updating book with ID:", id, "Payload:", payload);
     const response = await apiClient.put(`${BASE_URL}/${id}`, payload);
     return response.data;
   } catch (error) {

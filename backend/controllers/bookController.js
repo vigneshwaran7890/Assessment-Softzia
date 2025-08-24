@@ -88,7 +88,6 @@ export const addBook = async (req, res) => {
   }
 };
 
-
 // Update a book
 export const updateBook = async (req, res) => {
   try {

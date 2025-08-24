@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 
 export const verifyToken = (req, res, next) => {
   try {
-    console.log("Verifying token...");
     const authHeader = req.headers["authorization"] || req.headers["Authorization"];
     
     if (!authHeader) {
@@ -17,7 +16,6 @@ export const verifyToken = (req, res, next) => {
       return res.status(403).json({ message: "No token provided" });
     }
 
-    console.log('Token found, verifying...');
     
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
@@ -28,7 +26,6 @@ export const verifyToken = (req, res, next) => {
         });
       }
       
-      console.log('Token verified, user:', decoded);
       
       // Ensure we have a valid user ID
       if (!decoded.id) {
@@ -45,7 +42,6 @@ export const verifyToken = (req, res, next) => {
         role: decoded.role
       };
       
-      console.log('User authenticated:', req.user);
       next();
     });
   } catch (error) {

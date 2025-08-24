@@ -5,10 +5,10 @@ import { useToast } from '../hooks/use-toast';
 import AddBookModal from '../components/dashBoard/AddBookModal.js';
 
 import { useUserStore } from '../store/index.js';
-import { getUserBooks, deleteBook } from '../api/book.js';
-import BookCard from '@/components/dashBoard/BookCard.js';
-import EditBookModal from '@/components/dashBoard/EditBookModal.js';
-import DeleteBookModal from '@/components/dashBoard/DeleteBookModal.js';
+import { getUserBooks, deleteBook,updateBook } from '../api/book.js';
+import BookCard from '../components/dashBoard/BookCard.js';
+import EditBookModal from '../components/dashBoard/EditBookModal.js';
+import DeleteBookModal from '../components/dashBoard/DeleteBookModal.js';
 
 const Home = () => {
   const { user, logout } = useAuth();
@@ -54,6 +54,7 @@ const Home = () => {
   };
 
   const handleEditBook = (book) => {
+    updateBook(book._id)
     setSelectedBook(book);
     setIsEditBookOpen(true);
   };
