@@ -36,6 +36,10 @@ const bookSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
+    keywords: {
+        type: [String],
+        default: [],
+    },
     status: {
         type: String,
         enum: ['Processing', 'Published'],

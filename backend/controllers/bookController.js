@@ -12,7 +12,7 @@ export const addBook = async (req, res) => {
       return res.status(401).json({ message: "Authentication required" });
     }
 
-    const { title, genre, price, description } = req.body;
+    const { title, genre, price, description, keywords } = req.body;
     if (!title || !genre || !price) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -26,8 +26,9 @@ export const addBook = async (req, res) => {
     // Upload to Cloudinary
     const [pdfResult, coverResult] = await Promise.all([
       cloudinary.uploader.upload(req.files.pdf[0].path, {
-        resource_type: "auto",
+        resource_type: "raw",   // 👈 FIXED
         folder: "books/pdf",
+        format: "pdf",
       }),
       cloudinary.uploader.upload(req.files.coverImage[0].path, {
         folder: "books/covers",
@@ -44,6 +45,7 @@ export const addBook = async (req, res) => {
       price: parseFloat(price),
       description: description?.trim() || "",
       pdfUrl: pdfResult.secure_url,
+      keywords: keywords ? keywords.split(',').map(kw => kw.trim()) : [],
       coverImage: coverResult.secure_url,
       createdBy: userId,
       status: "Published",
