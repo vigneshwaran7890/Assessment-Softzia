@@ -5,7 +5,8 @@ import {
   deleteBook,
   getBooks,
   getBookById,
-  getBooksByUser
+  getBooksByUser,
+  generateDescription
 } from '../controllers/bookController.js';
 import { verifyToken } from '../middleware/authMiddleware.js';
 import { uploadFiles } from '../middleware/uploadMiddleware.js';
@@ -19,5 +20,6 @@ router.get('/:id',verifyToken, getBookById);
 router.get('/user/books',verifyToken, getBooksByUser);
 router.put('/:id',verifyToken, updateBook);
 router.delete('/:id',verifyToken, deleteBook);
+router.post('/generate-description', verifyToken, generateDescription);
 
 export default router;

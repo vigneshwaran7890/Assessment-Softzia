@@ -2,6 +2,7 @@ import Book from '../models/bookModel.js'; // adjust path as needed
 import mongoose from 'mongoose';
 import cloudinary from '../config/cloudinary.js';
 import fs from 'fs';
+import { model } from "../config/geminiConfig.js";
 
 // Add a new book with PDF and cover image upload
 export const addBook = async (req, res) => {
@@ -171,3 +172,43 @@ export const getBooksByUser = async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const generateDescription = async (req, res) => {
+  try {
+    const { title, genre } = req.body;
+
+    if (!title || !genre) {
+      return res.status(400).json({ message: "Title and genre are required" });
+    }
+
+    const prompt = `Return ONLY valid JSON (no markdown, no code fences) with two fields for a ${genre} book titled "${title}":
+{
+  "description": "string (max 50 words)",
+  "keywords": ["string", "string", "string"]
+}`;
+
+    const response = await model.generateContent(prompt);
+
+    let text = response.response.text().trim();
+
+    // ✅ Strip code block markers if present
+    text = text.replace(/```json|```/g, "").trim();
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      console.error("Failed to parse Gemini output:", err);
+      return res.status(500).json({ message: "Invalid response from Gemini" });
+    }
+
+    return res.status(200).json({
+      description: data.description || "",
+      keywords: data.keywords || [],
+    });
+  } catch (error) {
+    console.error("Error in generateDescription:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+

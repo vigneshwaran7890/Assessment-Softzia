@@ -66,3 +66,13 @@ export async function deleteBook(id) {
     throw error;
   }
 }
+
+export async function generateDescription(title,genre) {
+  try {
+    const response = await apiClient.post(`${BASE_URL}/generate-description`, { title, genre });
+    return response.data;
+  } catch (error) {
+    console.error("Error generating description:", error);
+    throw error;
+  }
+}

@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'react-hot-toast';
 import { X, FileText, Palette, BookOpen, Upload, DollarSign, Type, FileCheck, ImageIcon } from 'lucide-react';
-import { addBook } from '../../api/book';
+import { addBook, generateDescription } from '../../api/book';
 import CoverDesigner from './Cover';
 
 interface AddBookModalProps {
@@ -30,6 +30,8 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('details');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [descriptionLoading, setDescriptionLoading] = useState(false);
+  const [genDescription, setGenDescription] = useState('');
 
   if (!isOpen) return null;
 
@@ -45,14 +47,31 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
         toast.error('File too large. Please select a PDF under 10MB');
         return;
       }
-      
+
       if (selectedFile.type !== 'application/pdf') {
         toast.error('Please select a valid PDF file');
         return;
       }
-      
+
       setFiles(prev => ({ ...prev, pdf: selectedFile }));
       toast.success('PDF uploaded successfully');
+    }
+  };
+
+  const handleGenerateDescription = async (title, genre) => {
+    setDescriptionLoading(true);
+    try {
+      const data = await generateDescription(title, genre);
+      // setGenDescription(data.description);
+      setForm(prev => ({ ...prev, description: data.description }));
+      setForm(prev => ({ ...prev, keywords: data.keywords }));
+    } catch (error) {
+      console.error('Error generating description:', error);
+      toast.error('Failed to generate description. Please try again.');
+      return '';
+    }
+    finally {
+      setDescriptionLoading(false);
     }
   };
 
@@ -90,7 +109,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
     }
 
     setLoading(true);
-    
+
     try {
       // Create a new FormData instance
       const formData = new FormData();
@@ -111,20 +130,20 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
       const base64Response = await fetch(coverImage);
       const blob = await base64Response.blob();
       const coverFile = new File(
-        [blob], 
-        'cover.png', 
+        [blob],
+        'cover.png',
         { type: 'image/png' }
       );
       formData.append('coverImage', coverFile);
 
       // Make the API call
       const response = await addBook(formData);
-      
+
       if (response.data) {
         toast.success(`Book "${form.title}" added successfully!`);
         if (onBookAdded) onBookAdded();
         onClose();
-        
+
         // Reset form
         setForm({
           title: '',
@@ -150,7 +169,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
       <div className={`fixed inset-0 z-50 overflow-y-auto transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={onClose}></div>
-          
+
           <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl">
             <div className="absolute right-4 top-4">
               <button
@@ -161,7 +180,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                 <X className="h-5 w-5" />
               </button>
             </div>
-            
+
             <div className="bg-white px-6 pb-6 pt-6">
               <div className="sm:flex sm:items-start">
                 <div className="text-center sm:text-left w-full">
@@ -171,7 +190,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                   <p className="text-sm text-gray-500 mb-6">
                     Fill in the details below to add your book to the collection
                   </p>
-                  
+
                   {/* Tab Navigation */}
                   <div className="border-b border-gray-200 mb-6">
                     <nav className="-mb-px flex space-x-8">
@@ -198,7 +217,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                       </button>
                     </nav>
                   </div>
-                  
+
                   {/* Tab Content */}
                   <div className="mt-2">
                     {activeTab === 'details' && (
@@ -256,23 +275,69 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                         </div>
 
                         <div className="sm:col-span-6">
-                          <Label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-                            Description
-                          </Label>
+
+
+                          <div className="flex justify-between items-center mb-2">
+                            <Label
+                              htmlFor="description"
+                              className="block text-sm font-medium text-gray-800 "
+                            >
+                              Description
+                            </Label>
+                            <button
+                              onClick={() => handleGenerateDescription(form.title, form.genre)}
+                              type="button"
+                              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium 
+    bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md 
+    hover:from-blue-600 hover:to-indigo-600 transition-all"
+                              aria-label="Generate description"
+                            >
+                              {descriptionLoading ? (
+                                <>
+                                  <svg
+                                    className="animate-spin h-4 w-4 text-white"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8v8H4z"
+                                    ></path>
+                                  </svg>
+                                  AI Suggesting..
+                                </>
+                              ) : (
+                                <>✨ AI Suggest</>
+                              )}
+                            </button>
+
+                          </div>
+
                           <Textarea
                             id="description"
                             name="description"
-                            rows={4}
+                            rows={5}
                             value={form.description}
                             onChange={handleChange}
-                            placeholder="Brief description of your book"
-                            className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            placeholder="E.g. A thrilling mystery novel that explores the dark secrets of a small town..."
+                            className="block w-full rounded-xl border border-gray-300 shadow-sm 
+               focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400 
+               sm:text-sm p-3"
                           />
                         </div>
-
-                        <div className="sm:col-span-6">
+<div className="sm:col-span-6">
                           <Label htmlFor="keywords" className="block text-sm font-medium text-gray-700 mb-2">
-                            Keywords (comma separated)
+                            Keywords
                           </Label>
                           <Input
                             type="text"
@@ -284,9 +349,12 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                             className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm py-2.5"
                           />
                         </div>
+
                       </div>
                     )}
-                    
+
+                  
+
                     {activeTab === 'content' && (
                       <div className="sm:col-span-6">
                         <Label className="block text-sm font-medium text-gray-700 mb-2">
@@ -339,7 +407,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                         </div>
                       </div>
                     )}
-                    
+
                     {activeTab === 'cover' && (
                       <div className="sm:col-span-6">
                         <Label className="block text-sm font-medium text-gray-700 mb-2">
@@ -381,7 +449,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                 </div>
               </div>
             </div>
-            
+
             <div className="bg-gray-50 px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-between sm:px-6">
               <div className="flex space-x-2">
                 <Button
@@ -393,7 +461,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                 >
                   Cancel
                 </Button>
-                
+
                 {activeTab !== 'details' && (
                   <Button
                     type="button"
@@ -405,7 +473,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                   </Button>
                 )}
               </div>
-              
+
               <div className="flex space-x-2">
                 {activeTab !== 'cover' && (
                   <Button
@@ -417,7 +485,7 @@ const AddBookModal: React.FC<AddBookModalProps> = ({ isOpen, onClose, onBookAdde
                     Next
                   </Button>
                 )}
-                
+
                 {activeTab === 'cover' && (
                   <Button
                     type="button"
