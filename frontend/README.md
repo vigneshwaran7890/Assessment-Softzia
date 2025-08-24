@@ -1,8 +1,45 @@
-
 # Book Management System - Frontend
 
 ## 🚀 Overview
-A modern, responsive web application built with React, TypeScript, and Vite for managing books with a clean, intuitive user interface.
+A modern, responsive web application built with React, TypeScript, and Vite for managing books with a clean, intuitive user interface. This system allows users to authenticate, publish books, and manage their collection through an elegant dashboard.
+
+## 🏗 System Architecture
+
+```mermaid
+flowchart TD
+    A[User] --> B[Login/Register]
+    B --> C{Authentication}
+    C -->|Success| D[Dashboard]
+    C -->|Failure| B
+    
+    subgraph D [Dashboard Operations]
+        D1[View Books Collection]
+        D2[Add New Book]
+        D3[Edit Existing Book]
+        D4[Delete Book]
+    end
+    
+    D2 --> E[Publish Book Form]
+    E --> F{Validation}
+    F -->|Valid| G[Save to Database]
+    F -->|Invalid| E
+    
+    G --> H[Display in Dashboard]
+    
+    D3 --> I[Edit Book Form]
+    I --> J{Validation}
+    J -->|Valid| K[Update Database]
+    J -->|Invalid| I
+    
+    K --> H
+    
+    D4 --> L[Confirm Deletion]
+    L --> M[Remove from Database]
+    M --> N[Update Dashboard]
+    
+    H --> O[Real-time UI Update]
+    N --> O
+```
 
 ## 🛠 Tech Stack
 - **Framework**: React 18
@@ -25,12 +62,18 @@ frontend/
 │   ├── components/      # Reusable UI components
 │   │   ├── auth/        # Authentication components
 │   │   ├── dashboard/   # Dashboard components
+│   │   ├── books/       # Book-related components
 │   │   └── ui/          # Base UI components
-│   ├── contexts/        # React contexts
+│   ├── contexts/        # React contexts (Auth, Books, etc.)
 │   ├── hooks/           # Custom React hooks
 │   ├── pages/           # Page components
+│   │   ├── Login/       # Login page
+│   │   ├── Register/    # Registration page
+│   │   ├── Dashboard/   # Main dashboard
+│   │   └── BookForm/    # Add/Edit book form
 │   ├── styles/          # Global styles
 │   ├── types/           # TypeScript type definitions
+│   ├── utils/           # Utility functions
 │   ├── App.tsx          # Main App component
 │   └── main.tsx         # Application entry point
 ├── .env                 # Environment variables
@@ -57,11 +100,6 @@ frontend/
    yarn
    ```
 
-### Environment Setup
-Create a [.env](cci:7://file:///d:/assessment/Assessment-Softzia/backend/.env:0:0-0:0) file in the frontend root directory:
-```
-VITE_API_BASE_URL=http://localhost:5000/api
-VITE_GOOGLE_BOOKS_API_KEY=your_google_books_api_key
 ```
 
 ### Available Scripts
@@ -80,13 +118,24 @@ npm run lint
 ```
 
 ## 🌟 Features
-- User authentication (login/register)
-- Book management (CRUD operations)
-- Responsive design
-- Form validation
-- Toast notifications
-- Protected routes
-- File uploads
+- **User Authentication**: Secure login/register system with JWT tokens
+- **Book Management**: Full CRUD operations for books
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
+- **Form Validation**: Comprehensive validation for all forms
+- **Toast Notifications**: User feedback for actions
+- **Protected Routes**: Authentication-required routes
+- **File Uploads**: Support for book cover images
+- **Real-time Updates**: Instant UI updates after operations
+
+## 📖 User Flow
+1. **Authentication**: User logs in or registers for an account
+2. **Dashboard Access**: Upon successful authentication, user is redirected to dashboard
+3. **Book Management**:
+   - **Add Book**: User clicks "Add Book" button, fills form, and publishes
+   - **View Books**: Published books appear in the dashboard grid
+   - **Edit Book**: User can modify book details through edit form
+   - **Delete Book**: User can remove books with confirmation
+4. **Persistent Data**: All changes are saved to database and reflected in real-time
 
 ## 🧪 Testing
 To run tests:
@@ -101,14 +150,28 @@ The application can be deployed to any static hosting service:
 - GitHub Pages
 - Or any static file server
 
+Build the project first:
+```bash
+npm run build
+```
+
+Then deploy the `dist` folder to your preferred hosting platform.
+
 ## 📚 Dependencies
+### Main Dependencies
 - @radix-ui/react-*: Primitive UI components
 - @hookform/resolvers: Form validation
 - axios: HTTP client
 - react-hook-form: Form handling
 - react-router-dom: Routing
 - tailwindcss: Utility-first CSS framework
+
+### Development Dependencies
 - @types/*: TypeScript type definitions
+- @vitejs/plugin-react: Vite plugin for React
+- eslint: Code linting
+- jsdom: Testing environment
+- vite: Build tool
 
 ## 🤝 Contributing
 1. Fork the repository
@@ -120,3 +183,9 @@ The application can be deployed to any static hosting service:
 ## 📝 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 🆘 Support
+For support, please open an issue in the GitHub repository or contact the development team.
+
+---
+
+**Happy Reading and Book Management!** 📚✨
